@@ -4,8 +4,8 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('game/add', views.add_game, name='add_game'),
-    path('game/get_all', views.get_game, name='get_all_games'),
-    path('game/get_id', views.get_game, name='get_game_by_id'),
+    path('game/all', views.get_game, name='get_all_games'),
+    path('game/get_id', views.get_game_by_id, name='get_game_by_id'),
     path('game/delete', views.delete_game, name='delete_game'),
     path('user/add', views.add_user, name='add_user'),
     path('user/all', views.get_users, name='get_all_users'),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('meeting/delete', views.delete_meeting, name='delete_meeting'),
     path('meeting/rm_user', views.remove_user_from_meeting, name='remove_user_from_meeting'),
     path('meeting/add_user', views.add_user_to_meeting, name='add_user_to_meeting'),
+    path('meeting/add_date', views.add_preffered_date, name='add_preffered_date'),
     path('denied', views.permission_denied, name='denied'),
     path('authorize', views.auth, name='authorize')
 ]
