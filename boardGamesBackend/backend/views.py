@@ -67,29 +67,53 @@ def add_meeting(request):
 @login_required()
 def get_game(request):
     result = Game.objects.values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 
 def get_game_by_id(request):
     result = Game.objects.filter(id=request.GET.get('id')).values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def get_user_by_id(request):
     result = User.objects.filter(id=request.POST.get('id')).values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def get_users(request):
     result = User.objects.values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def get_meeting_by_id(request):
     result = Meeting.objects.filter(id=request.GET.get('id')).values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def get_meeting(request):
     result = Meeting.objects.values()
-    return JsonResponse({'data': list(result)})
+    response = JsonResponse(
+        {'data': list(result)}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 def add_user_to_meeting(request):
     try:
         user = get_object_or_404(User, id=request.POST.get('user_id'))
