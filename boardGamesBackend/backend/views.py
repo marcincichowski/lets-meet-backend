@@ -41,15 +41,22 @@ def add_game(request):
     return HttpResponse("ok")
 
 def add_user(request):
+
+
     try:
         user = User.objects.create_user(request.POST.get('username'),
                                         request.POST.get('email'),
                                         request.POST.get('password')
                                        )
         user.save()
+        response = JsonResponse(
+            {'text': 'added',
+             'status': 'success'}
+        )
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
     except Exception as e:
         return HttpResponse(e)
-    return HttpResponse('user added')
 
 def add_meeting(request):
     try:
@@ -64,13 +71,16 @@ def add_meeting(request):
         return HttpResponse(e)
     return HttpResponse('Meeting added')
 
-@login_required()
+
 def get_game(request):
-    result = Game.objects.values()
+    result = Game.objects.all()
+
+    data = serialize('json', list(result))
     response = JsonResponse(
-        {'data': list(result)}
+        {'data': data}
     )
     response["Access-Control-Allow-Origin"] = "*"
+    print(response)
     return response
 
 
@@ -81,6 +91,17 @@ def get_game_by_id(request):
         {'data': list(result)}
     )
     response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def get_game_by_status(request):
+    result = Game.objects.filter(status=request.GET.get('value'))
+    print(result)
+    data = serialize('json', list(result))
+    response = JsonResponse(
+        {'data': data}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    print(response)
     return response
 
 def get_user_by_id(request):
@@ -108,12 +129,27 @@ def get_meeting_by_id(request):
     return response
 
 def get_meeting(request):
-    result = Meeting.objects.values()
+    result = Meeting.objects.all()
+
+    data = serialize('json', list(result))
     response = JsonResponse(
-        {'data': list(result)}
+        {'data': data}
     )
     response["Access-Control-Allow-Origin"] = "*"
+    print(response)
     return response
+
+def get_meeting_by_user_id(request):
+    result = Meeting.objects.filter(owner_id=request.GET.get('id'))
+
+    data = serialize('json', list(result))
+    response = JsonResponse(
+        {'data': data}
+    )
+    response["Access-Control-Allow-Origin"] = "*"
+    print(response)
+    return response
+
 def add_user_to_meeting(request):
     try:
         user = get_object_or_404(User, id=request.POST.get('user_id'))
@@ -222,12 +258,28 @@ def auth(request):
     password = request.POST.get('password')
     # return HttpResponse(f"{username}, {password}")
     user = authenticate(request, username=username, password=password)
+
+    if user.is_superuser:
+        role = 'admin'
+    elif user.is_staff:
+        role = 'moderator'
+    else:
+        role = 'user'
+    response = JsonResponse(
+        {
+            'username': username,
+            'role': role,
+            'user_id': user.id
+        }
+    )
+    response["Access-Control-Allow-Origin"] = "*"
     if user is not None:
         # response = serialize("json", user, fields=(username, password))
         login(request, user)
-        return HttpResponse("authorized")
+        return response
     else:
-        return HttpResponse("Bad credentials")
+        return response
+
 
 def logout(request):
     logout(request)
