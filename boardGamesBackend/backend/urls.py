@@ -8,6 +8,7 @@ urlpatterns = [
     path('game/get_id', views.get_game_by_id, name='get_game_by_id'),
     path('game/get_status', views.get_game_by_status, name='get_game_by_status'),
     path('game/delete', views.delete_game, name='delete_game'),
+    path('game/accept', views.accept_game, name='accept_game'),
     path('user/add', views.add_user, name='add_user'),
     path('user/all', views.get_users, name='get_all_users'),
     path('user/get_id', views.get_user_by_id, name='get_user_by_id'),

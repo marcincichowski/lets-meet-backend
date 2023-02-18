@@ -20,7 +20,6 @@ def index(request):
     return HttpResponse("index")
 
 
-@login_required
 def add_game(request):
     try:
         result = Game(name=request.POST.get('name'),
@@ -37,8 +36,12 @@ def add_game(request):
                       )
         result.save()
     except Exception as e:
-        return HttpResponse(e)
-    return HttpResponse("ok")
+        response = HttpResponse(e)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+    response = HttpResponse('success')
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def add_user(request):
 
@@ -68,8 +71,12 @@ def add_meeting(request):
                       )
         meeting.save()
     except Exception as e:
-        return HttpResponse(e)
-    return HttpResponse('Meeting added')
+        response = HttpResponse(e)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+    response = HttpResponse('success')
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 def get_game(request):
@@ -182,6 +189,18 @@ def remove_user_from_meeting(request):
 def update_game(request):
     return HttpResponse("Update Game endpoint in preparation")
 
+def accept_game(request):
+    try:
+        result = get_object_or_404(Game, id=request.GET.get('id'))
+        result.status = 1
+        result.save()
+        response = HttpResponse('success')
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+    except Exception as e:
+        response = HttpResponse(e)
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
 
 @login_required()
 def delete_game(request):
