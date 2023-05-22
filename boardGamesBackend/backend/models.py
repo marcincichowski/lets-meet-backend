@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.serializers import serialize
+
 
 # Create your models here.
 class Game(models.Model):
@@ -19,6 +21,8 @@ class Game(models.Model):
     person_count = models.IntegerField()
     is_online = models.BooleanField()
 
+    def natural_key(self):
+        return self.name
     #def __str__(self):
     #    return f"{self.name}"
 
@@ -30,6 +34,7 @@ class Meeting(models.Model):
     name = models.CharField(max_length=20)
     add_date = models.DateTimeField(default=timezone.now)
     meeting_date = models.CharField(max_length=40, blank=True, null=True)
+
 
 class Participant(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_id")

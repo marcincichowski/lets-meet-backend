@@ -21,6 +21,8 @@ urlpatterns = [
     path('meeting/rm_user', views.remove_user_from_meeting, name='remove_user_from_meeting'),
     path('meeting/add_user', views.add_user_to_meeting, name='add_user_to_meeting'),
     path('meeting/add_date', views.add_preffered_date, name='add_preffered_date'),
+    path('meeting/set_date', views.set_meeting_date, name='set_meeting_date'),
+    path('meeting/get_users', views.meeting_get_users, name='get_users_from_meeting'),
     path('denied', views.permission_denied, name='denied'),
     path('authorize', views.auth, name='authorize')
 ]
