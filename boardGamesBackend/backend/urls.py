@@ -12,7 +12,9 @@ router.register(r'participants', ParticipantViewSet, basename='participants')
 
 
 urlpatterns = [
-    path("", include(router.urls))
+    path("", include(router.urls)),
+    path('authorize', views.auth, name='authorize'),
+    path('meeting/get_users', views.meeting_get_users, name='get_users_from_meeting'),
 ]
 
 

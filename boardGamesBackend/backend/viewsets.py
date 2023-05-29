@@ -1,5 +1,6 @@
 from rest_framework import viewsets
-from .serializers import UserSerializer, GameSerializer, MeetingSerializer, ParticipantSerializer
+from .serializers import UserSerializer, GameSerializer, MeetingSerializer, ParticipantSerializer, \
+    WriteMeetingSerializer
 from django.contrib.auth.models import User
 from .models import Game, Meeting, Participant
 
@@ -17,10 +18,14 @@ class GameViewSet(viewsets.ModelViewSet):
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
-
-    serializer_class = MeetingSerializer
+    serializer_class = WriteMeetingSerializer
     queryset = Meeting.objects.all()
 
+    def get_serializer_class(self):
+        if self.action == "list" or self.action == "retrieve":
+            return MeetingSerializer
+        else:
+            return WriteMeetingSerializer
 
 class ParticipantViewSet(viewsets.ModelViewSet):
 

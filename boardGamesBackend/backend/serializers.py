@@ -17,13 +17,25 @@ class GameSerializer(serializers.ModelSerializer):
         model = Game
         fields = '__all__'
 
+class UserNestedSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username', 'id']
 
 class MeetingSerializer(serializers.ModelSerializer):
+    participants_id = UserNestedSerializer(many=True, read_only=True)
 
     class Meta:
         model = Meeting
         fields = '__all__'
 
+class WriteMeetingSerializer(serializers.ModelSerializer):
+    participants_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True)
+
+    class Meta:
+        model = Meeting
+        fields = '__all__'
 
 class ParticipantSerializer(serializers.ModelSerializer):
 

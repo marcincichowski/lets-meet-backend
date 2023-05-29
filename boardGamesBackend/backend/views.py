@@ -114,9 +114,14 @@ def get_game_by_status(request):
     return response
 
 def get_user_by_id(request):
-    print(request.POST.get('id'))
-    data = serialize('json', User.objects.filter(id=request.POST.get('id')))
-    response = JsonResponse(
+    test = User.objects.values()
+    test2 = list(test)
+    print(test2)
+    data = serialize('json', User.objects.filter(id=request.GET.get('id')), fields=['id', 'password'])
+    #print(data)
+    response_data = json.loads(data)
+    #print(response_data)
+    response = HttpResponse(
         {'data': data}
     )
 
@@ -344,30 +349,39 @@ def update_suggested_date(meeting_id):
     meeting.save()
 
 def auth(request):
+    print(request.content_params)
+    print(request.content_type)
+    print(request.headers)
+    print(request.body)
     username = request.POST.get('username')
     password = request.POST.get('password')
     # return HttpResponse(f"{username}, {password}")
+    print(username)
+    print(password)
     user = authenticate(request, username=username, password=password)
 
-    if user.is_superuser:
-        role = 'admin'
-    elif user.is_staff:
-        role = 'moderator'
-    else:
-        role = 'user'
-    response = JsonResponse(
-        {
-            'username': username,
-            'role': role,
-            'user_id': user.id
-        }
-    )
-    response["Access-Control-Allow-Origin"] = "*"
+
     if user is not None:
         # response = serialize("json", user, fields=(username, password))
         login(request, user)
+        if user.is_superuser:
+            role = 'admin'
+        elif user.is_staff:
+            role = 'moderator'
+        else:
+            role = 'user'
+        response = JsonResponse(
+            {
+                'username': username,
+                'role': role,
+                'user_id': user.id
+            }
+        )
+        response["Access-Control-Allow-Origin"] = "*"
         return response
     else:
+        response = HttpResponse(status=401)
+        response["Access-Control-Allow-Origin"] = "*"
         return response
 
 
