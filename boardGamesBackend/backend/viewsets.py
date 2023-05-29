@@ -27,7 +27,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
         else:
             return WriteMeetingSerializer
 
+
 class ParticipantViewSet(viewsets.ModelViewSet):
 
     serializer_class = ParticipantSerializer
     queryset = Participant.objects.all()
+
+    def get_queryset(self):
+        queryset = Participant.objects.all()
+        meeting = self.request.query_params.get('meeting')
+        if meeting is not None:
+            queryset = queryset.filter(meeting_id=meeting)
+        return queryset
