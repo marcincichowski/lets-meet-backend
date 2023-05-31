@@ -43,16 +43,18 @@ class ParticipantViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(meeting_id=meeting)
         return queryset
 
-    @action(detail=True, methods=['patch'])
+    @action(detail=False, methods=['patch'])
     def set_prefered_date(self, request, pk=None):
-        meeting = self.request.query_params.get('meeting')
-        user_id = self.request.query_params.get('user_id')
-        participant = Participant.objects.get(meeting_id=meeting, user_id=user_id)
+
         serializer = ParticipantSerializer(data=request.data)
         if serializer.is_valid():
-            participant.prefered_date(serializer.validated_data['prefered_date'])
+            meeting = serializer.validated_data['meeting_id']
+            user_id = serializer.validated_data['user_id']
+            participant = Participant.objects.get(meeting_id=meeting, user_id=user_id)
+            participant.prefered_date = serializer.validated_data['prefered_date']
             participant.save()
-            return Response({'status': 'date set'})
+            print(serializer.data)
+            return Response(serializer.data)
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
